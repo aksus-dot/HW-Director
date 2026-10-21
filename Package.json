@@ -1,0 +1,14 @@
+{
+  "name": "hw-director",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HW Director: Direct Homework & Essay Generator powered by Gemini 3.8 Flash",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}

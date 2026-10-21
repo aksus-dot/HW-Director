@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct Study & Homework Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['DM Sans','Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    :root{--bg:#ebe6e2;--card:#f7f4f1;--card2:#ffffff;--ink:#15151f;--muted:#6b6872;--line:#ddd5cf;--field:#ffffff;--blue:#2338c8;--blue-h:#1b2ca8;--orange:#ee7f3a;--peach1:#f4d6c6;--peach2:#f7e4d2;--soft:#efe9e4}
+    .dark{--bg:#14121a;--card:#1d1a24;--card2:#25212e;--ink:#f3eee9;--muted:#a09aa8;--line:#34303d;--field:#16131c;--blue:#5b6dff;--blue-h:#7685ff;--peach1:#3a2a2c;--peach2:#2b2230;--soft:#25212e}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans','Inter',system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg) 55%,var(--peach2) 100%);background-attachment:fixed}
+    .i{display:inline-block;width:1em;height:1em;vertical-align:-.125em;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+    .i-bolt{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E")}
+    .i-headphones{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 14v-2a9 9 0 0 1 18 0v2'/%3E%3Cpath d='M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z'/%3E%3C/svg%3E")}
+    .i-clock{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 6v6l4 2'/%3E%3C/svg%3E")}
+    .i-folder-closed{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z'/%3E%3C/svg%3E")}
+    .i-moon{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z'/%3E%3C/svg%3E")}
+    .i-sun{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E")}
+    .i-arrow-down{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M19 12l-7 7-7-7'/%3E%3C/svg%3E")}
+    .i-pen-nib{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19 7-7 3 3-7 7-3-3z'/%3E%3Cpath d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/%3E%3Cpath d='m2 2 7.6 7.6'/%3E%3Ccircle cx='11' cy='11' r='2'/%3E%3C/svg%3E")}
+    .i-square-root-variable{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12h3l4 8 4-16h7'/%3E%3C/svg%3E")}
+    .i-layer-group{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 2 10 5-10 5L2 7z'/%3E%3Cpath d='m2 12 10 5 10-5'/%3E%3Cpath d='m2 17 10 5 10-5'/%3E%3C/svg%3E")}
+    .i-circle-check{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E")}
+    .i-graduation-cap{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10 12 5 2 10l10 5z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5'/%3E%3C/svg%3E")}
+    .i-book-bookmark{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20'/%3E%3Cpath d='M10 2v8l3-2 3 2V2'/%3E%3C/svg%3E")}
+    .i-diagram-project{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='6' height='6' rx='1'/%3E%3Crect x='15' y='3' width='6' height='6' rx='1'/%3E%3Crect x='9' y='15' width='6' height='6' rx='1'/%3E%3Cpath d='M6 9v3h12V9M12 12v3'/%3E%3C/svg%3E")}
+    .i-circle-question{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01'/%3E%3C/svg%3E")}
+    .i-align-left{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18M3 12h12M3 18h16'/%3E%3C/svg%3E")}
+    .i-keyboard{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='5' width='20' height='14' rx='2'/%3E%3Cpath d='M6 9h.01M10 9h.01M14 9h.01M18 9h.01M7 15h10'/%3E%3C/svg%3E")}
+    .i-paperclip{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.4 11.1-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5'/%3E%3C/svg%3E")}
+    .i-check{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+    .i-wand-magic-sparkles{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.6 3.6-1.3-1.3a1.2 1.2 0 0 0-1.7 0L2.4 18.6a1.2 1.2 0 0 0 0 1.7l1.3 1.3a1.2 1.2 0 0 0 1.7 0L21.6 5.4a1.2 1.2 0 0 0 0-1.8'/%3E%3Cpath d='m14 7 3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9'/%3E%3C/svg%3E")}
+    .i-rotate-left{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E")}
+    .i-rotate-right{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 1 1-3-6.7L21 8'/%3E%3Cpath d='M21 3v5h-5'/%3E%3C/svg%3E")}
+    .i-copy{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E")}
+    .i-bookmark{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'/%3E%3C/svg%3E")}
+    .i-file-code{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6M10 13l-2 2 2 2M14 13l2 2-2 2'/%3E%3C/svg%3E")}
+    .i-file-lines{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6M8 13h8M8 17h8'/%3E%3C/svg%3E")}
+    .i-file-signature{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6M9 15l2 2 4-4'/%3E%3C/svg%3E")}
+    .i-play{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='6 4 20 12 6 20 6 4'/%3E%3C/svg%3E")}
+    .i-pause{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h4v16H6zM14 4h4v16h-4z'/%3E%3C/svg%3E")}
+    .i-xmark{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E")}
+    .i-trash-can{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6'/%3E%3C/svg%3E")}
+    .i-arrow-up-right-from-square{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3C/svg%3E")}
+    .i-circle-exclamation{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 8v4M12 16h.01'/%3E%3C/svg%3E")}
+    .i-folder-open{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 14 1.5-2.9A2 2 0 0 1 9.2 10H20a2 2 0 0 1 1.9 2.5l-1.5 6a2 2 0 0 1-1.9 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.7.9l.8 1.2a2 2 0 0 0 1.7.9H18a2 2 0 0 1 2 2v2'/%3E%3C/svg%3E")}
+    ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+    .muted{color:var(--muted)} .ico{color:var(--orange)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:24px}
+    .field{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:.6rem .8rem;font-size:.85rem;outline:none;transition:.2s}
+    .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 18%,transparent)}
+    .field::placeholder{color:var(--muted);opacity:.7}
+    .btn-primary{background:var(--blue);color:#fff;border-radius:999px;font-weight:600;transition:.2s}
+    .btn-primary:hover{background:var(--blue-h)}
+    .btn-ghost{background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:999px;transition:.2s}
+    .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+    .iconbtn{padding:.5rem .7rem;border-radius:999px;color:var(--muted);transition:.2s}
+    .iconbtn:hover,.iconbtn.is-on{color:var(--blue);background:var(--card2)}
+    .mode-btn{display:flex;align-items:center;gap:.5rem;padding:.65rem .8rem;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font-size:.75rem;font-weight:500;transition:.2s}
+    .mode-btn:hover{border-color:var(--blue)}
+    .mode-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+    .mode-btn.active i{color:#fff!important}
+    .chip{padding:.35rem .8rem;background:var(--card2);border:1px solid var(--line);border-radius:999px;font-size:.7rem;color:var(--muted);transition:.2s}
+    .chip:hover{color:var(--blue);border-color:var(--blue)}
+    .ig{border-radius:24px;overflow:hidden;background:var(--card2);border:1px solid var(--line)}
+    .ig-head{background:linear-gradient(135deg,var(--peach1),var(--peach2));padding:1.5rem;text-align:center}
+    .ig-head h2{font-size:1.6rem;font-weight:700;margin:0}.ig-head p{color:var(--muted);margin-top:.3rem;font-size:.9rem}
+    .ig-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem;padding:1rem}
+    .ig-stat{background:var(--blue);color:#fff;border-radius:18px;padding:.9rem;text-align:center}
+    .ig-stat b{display:block;font-size:1.6rem}.ig-stat span{font-size:.72rem;opacity:.9}
+    .ig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;padding:0 1rem 1rem}
+    .ig-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem}
+    .ig-ico{font-size:1.6rem}.ig-card h4{font-weight:700;margin:.3rem 0}.ig-card ul{font-size:.8rem;color:var(--muted);padding-left:1rem;list-style:disc}
+    .ig-steps{padding:0 1rem 1rem;display:grid;gap:.6rem}
+    .ig-step{display:flex;gap:.75rem;align-items:flex-start}
+    .ig-step span{background:var(--orange);color:#fff;border-radius:999px;width:1.7rem;height:1.7rem;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
+    .ig-step p{font-size:.8rem;color:var(--muted)}
+    .ig-take{background:var(--ink);color:var(--bg);text-align:center;padding:1rem;font-weight:600;font-size:.9rem}
+    .mm-root{display:inline-block;background:var(--blue);color:#fff;border-radius:999px;padding:.5rem 1.2rem;font-weight:700;margin-bottom:.8rem}
+    .mm ul{list-style:none;margin:0;padding-left:1.1rem;border-left:2px solid var(--line)}
+    .mm ul.mm-tree{border-left:none;padding-left:0}
+    .mm li{margin:.3rem 0}
+    .mm summary{cursor:pointer;font-weight:600;color:var(--c);padding:.15rem .6rem;border-left:3px solid var(--c);border-radius:6px;background:var(--card2)}
+    .mm-leaf{font-size:.85rem;padding-left:.5rem}
+    .sd-title{font-weight:700;margin-bottom:.6rem}
+    .sd-stage{aspect-ratio:16/9;min-height:240px;background:linear-gradient(135deg,var(--peach1),var(--peach2));border-radius:24px;padding:1.5rem 2rem;display:flex;flex-direction:column;justify-content:center}
+    .sd-vis{font-size:2.4rem}.sd-stage h3{font-size:1.5rem;font-weight:700;margin:.3rem 0 .6rem}.sd-stage ul{list-style:disc;padding-left:1.2rem;line-height:1.7}
+    .sd-nav{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem}
+    .badge{background:var(--orange);color:#fff;border-radius:999px;font-size:.62rem;font-weight:600;padding:.12rem .55rem}
+    .hero{background:linear-gradient(135deg,var(--peach1),var(--peach2));border-radius:32px;position:relative;overflow:hidden}
+    .ring{position:absolute;border-radius:999px;border:1px solid color-mix(in srgb,var(--orange) 35%,transparent)}
+    .sun{background:radial-gradient(circle at 35% 30%,#ffc27a,#f08a3c);border-radius:999px}
+    .float{background:var(--card2);border-radius:18px;box-shadow:0 12px 30px rgba(80,40,10,.15);display:flex;align-items:center;justify-content:center;position:absolute}
+    .eyebrow{color:var(--orange);font-size:.7rem;font-weight:600;letter-spacing:.04em}
+    .prose h1,.prose h2,.prose h3{font-weight:700;margin-top:1.25em;margin-bottom:.5em;color:var(--ink)}
+    .prose h1{font-size:1.6rem}.prose h2{font-size:1.25rem}.prose h3{font-size:1.1rem}
+    .prose p{margin-bottom:.85em;line-height:1.65}
+    .prose ul,.prose ol{margin-bottom:1em;padding-left:1.25em}.prose ul{list-style:disc}.prose ol{list-style:decimal}.prose li{margin-bottom:.25em}
+    .prose blockquote{border-left:3px solid var(--orange);padding-left:1rem;font-style:italic;margin:1em 0}
+    .prose code{font-family:'JetBrains Mono',monospace;background:color-mix(in srgb,var(--orange) 15%,transparent);padding:.15rem .35rem;border-radius:.25rem;font-size:.9em}
+    .prose pre{background:var(--soft);padding:1rem;border-radius:14px;overflow-x:auto;margin:1em 0}
+    .prose pre code{background:transparent;padding:0}
+    .prose hr{border-color:var(--line);margin:1em 0}
+    .prose strong{color:var(--ink)}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 px-4 py-3" style="background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px)">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white" style="background:var(--blue)">
+          <i class="i i-bolt text-sm"></i>
+        </div>
+        <h1 class="font-bold text-lg tracking-tight leading-none">HW Director <span class="badge ml-1">Zero-Fluff</span></h1>
+      </div>
+
+      <div class="flex items-center gap-1.5 card !rounded-full px-2 py-1">
+        <button id="toggleAudioBtn" title="Toggle Lo-Fi Ambient Sound" class="iconbtn"><i class="i i-headphones text-sm"></i></button>
+        <button id="togglePomoBtn" title="Pomodoro Focus Timer" class="btn-ghost flex items-center gap-2 px-3 py-1.5 text-xs font-medium">
+          <i class="i i-clock ico"></i><span id="pomoTimerDisplay">25:00</span>
+        </button>
+        <button id="toggleDrawerBtn" title="Saved Notebook" class="iconbtn relative">
+          <i class="i i-folder-closed text-sm"></i>
+          <span id="savedBadge" class="hidden absolute -top-0.5 -right-0.5 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold" style="background:var(--orange)">0</span>
+        </button>
+        <button id="themeToggleBtn" title="Toggle Light/Dark Theme" class="iconbtn"><i class="i i-moon text-sm" id="themeIcon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="px-4 pt-2">
+    <div class="hero max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-14 grid md:grid-cols-2 gap-8 items-center">
+      <div class="relative z-10">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">Direct Homework &amp; Essay Generator</h2>
+        <p class="mt-5 text-sm md:text-base leading-relaxed max-w-lg muted">
+          HW Director turns any topic, question, or chapter into finished, ready-to-use study material: essays, step-by-step solutions, multi-disciplinary projects, direct answers, flashcards, summaries, research reports, infographics, mind maps, slide decks, study guides, briefing documents, data tables and audio overviews. There is no filler and no commentary. Choose an assignment type, add your prompt, and get clean work you can copy, save to your notebook, or export.
+        </p>
+        <a href="#workspace" aria-label="Go to workspace" class="btn-primary inline-flex items-center justify-center w-12 h-12 mt-7 shadow-lg"><i class="i i-arrow-down"></i></a>
+      </div>
+      <div class="relative h-64 md:h-80 hidden sm:block">
+        <div class="ring" style="width:130%;height:130%;right:-30%;top:-15%"></div>
+        <div class="ring" style="width:100%;height:100%;right:-15%;top:0"></div>
+        <div class="sun absolute" style="width:68%;aspect-ratio:1;right:6%;top:10%"></div>
+        <div class="float" style="width:84px;height:84px;left:8%;top:6%"><i class="i i-pen-nib text-3xl" style="color:var(--blue)"></i></div>
+        <div class="float" style="width:96px;height:96px;left:38%;top:42%"><i class="i i-square-root-variable text-4xl" style="color:var(--orange)"></i></div>
+        <div class="float" style="width:76px;height:76px;right:2%;bottom:2%"><i class="i i-layer-group text-3xl" style="color:var(--blue)"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature descriptions -->
+  <section class="px-4 mt-6">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-4">
+      <div class="card p-5"><i class="i i-circle-check ico text-xl"></i><h3 class="font-semibold mt-3">Finished work only</h3><p class="text-xs muted mt-1 leading-relaxed">Every result is the final content itself, written in clean formatting with no introductions, disclaimers or meta-instructions to remove.</p></div>
+      <div class="card p-5"><i class="i i-graduation-cap ico text-xl"></i><h3 class="font-semibold mt-3">Built for every level</h3><p class="text-xs muted mt-1 leading-relaxed">Adjust the output depth and the academic grade level, from middle school to college, and attach a file or link for extra context.</p></div>
+      <div class="card p-5"><i class="i i-book-bookmark ico text-xl"></i><h3 class="font-semibold mt-3">Study tools included</h3><p class="text-xs muted mt-1 leading-relaxed">A focus timer, lo-fi ambient sound, a saved notebook and light or dark themes keep your whole study session in one place.</p></div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main id="workspace" class="flex-1 max-w-7xl w-full mx-auto p-4 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 scroll-mt-16">
+
+    <section class="lg:col-span-5 flex flex-col gap-4">
+
+      <div class="card p-4">
+        <label class="eyebrow uppercase block mb-3 px-1">Select Assignment Type</label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2" id="modeButtonsGroup">
+          <button data-mode="essay" class="mode-btn active"><i class="i i-pen-nib text-indigo-500"></i> Essay Writer</button>
+          <button data-mode="solver" class="mode-btn"><i class="i i-square-root-variable text-emerald-500"></i> Step-by-Step Solver</button>
+          <button data-mode="mdp" class="mode-btn"><i class="i i-diagram-project text-amber-500"></i> MDP Project</button>
+          <button data-mode="qa" class="mode-btn"><i class="i i-circle-question text-sky-500"></i> Direct Q&A</button>
+          <button data-mode="quiz" class="mode-btn"><i class="i i-layer-group text-purple-500"></i> Flashcards / Quiz</button>
+          <button data-mode="summary" class="mode-btn"><i class="i i-align-left text-rose-500"></i> Direct Summary</button>
+        </div>
+        <label class="eyebrow uppercase block mt-4 mb-3 px-1">Study Studio</label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2">
+          <button data-mode="research" class="mode-btn"><i class="i i-book-bookmark text-orange-500"></i> Research Report</button>
+          <button data-mode="infographic" class="mode-btn"><i class="i i-wand-magic-sparkles text-pink-500"></i> Infographic</button>
+          <button data-mode="mindmap" class="mode-btn"><i class="i i-diagram-project text-teal-500"></i> Mind Map</button>
+          <button data-mode="slides" class="mode-btn"><i class="i i-file-signature text-indigo-500"></i> Slide Deck</button>
+          <button data-mode="datatable" class="mode-btn"><i class="i i-file-lines text-emerald-500"></i> Data Table</button>
+          <button data-mode="studyguide" class="mode-btn"><i class="i i-graduation-cap text-amber-500"></i> Study Guide</button>
+          <button data-mode="briefing" class="mode-btn"><i class="i i-bolt text-rose-500"></i> Briefing Doc</button>
+          <button data-mode="audio" class="mode-btn"><i class="i i-headphones text-purple-500"></i> Audio Overview</button>
+        </div>
+      </div>
+
+      <div class="card p-5 flex flex-col gap-3 flex-1">
+        <div class="flex items-center justify-between">
+          <label id="inputLabel" class="text-xs font-semibold flex items-center gap-1.5"><i class="i i-keyboard ico"></i> Essay Topic or Prompt</label>
+          <span id="charCount" class="text-[11px] muted font-mono">0 chars</span>
+        </div>
+
+        <textarea id="promptInput" rows="6" placeholder="Enter topic (e.g. 'Agriculture in India', 'Solve 3x + 5 = 20', 'Photosynthesis process'...)" class="field resize-y"></textarea>
+
+        <div class="space-y-2 pt-2" style="border-top:1px solid var(--line)">
+          <div class="flex items-center justify-between">
+            <span class="text-xs muted font-medium">Attach Context / Reference</span>
+            <button id="clearAttachmentsBtn" class="text-[11px] muted hover:underline hidden">Clear files</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <label class="btn-ghost flex items-center justify-center gap-2 px-3 py-2 text-xs cursor-pointer">
+              <i class="i i-paperclip ico"></i>
+              <span id="fileLabel">Upload File (TXT, Doc, Image)</span>
+              <input type="file" id="fileInput" accept=".txt,.doc,.docx,.pdf,image/*" class="hidden">
+            </label>
+            <div class="relative">
+              <input type="url" id="linkInput" placeholder="Paste web link for context..." class="field !rounded-full !text-xs">
+            </div>
+          </div>
+          <div id="fileContextPreview" class="hidden text-xs p-2 px-3 rounded-full flex items-center justify-between" style="background:var(--card2);border:1px solid var(--line)">
+            <span class="truncate pr-2" id="fileContextName">filename.txt</span>
+            <i class="i i-check text-emerald-500 text-xs"></i>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs pt-2">
+          <div>
+            <label class="text-[11px] muted block mb-1">Target Output Depth</label>
+            <select id="depthSelect" class="field !text-xs !py-1.5">
+              <option value="standard" selected>Standard (Comprehensive)</option>
+              <option value="detailed">In-Depth / Full Length</option>
+              <option value="brief">Concise / Brief</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] muted block mb-1">Academic Grade Level</label>
+            <select id="gradeSelect" class="field !text-xs !py-1.5">
+              <option value="highschool" selected>High School / Secondary</option>
+              <option value="undergrad">Undergraduate / College</option>
+              <option value="middle">Middle School</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-2 flex items-center gap-2">
+          <button id="generateBtn" class="btn-primary flex-1 py-3 px-4 text-sm flex items-center justify-center gap-2 shadow-lg active:scale-[0.99]">
+            <i class="i i-wand-magic-sparkles"></i>
+            <span id="generateBtnText">Generate Direct Output</span>
+          </button>
+          <button id="resetBtn" title="Reset All Fields" class="btn-ghost w-11 h-11 flex items-center justify-center text-sm"><i class="i i-rotate-left"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="lg:col-span-7 flex flex-col gap-4">
+      <div class="card p-6 flex flex-col flex-1 min-h-[500px] relative">
+
+        <div class="flex items-center justify-between pb-3 mb-4" style="border-bottom:1px solid var(--line)">
+          <div class="flex items-center gap-2">
+            <span id="outputBadge" class="badge !text-xs !py-1 !px-3 uppercase tracking-wide">Direct Essay Output</span>
+            <span id="wordCountBadge" class="text-xs muted font-mono">0 words</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button id="playBtn" onclick="togglePlay()" title="Listen with your browser's voices" class="iconbtn text-xs hidden items-center gap-1.5"><i class="i i-play"></i><span class="hidden sm:inline">Listen</span></button>
+            <button id="copyBtn" title="Copy Content" class="iconbtn text-xs flex items-center gap-1.5"><i class="i i-copy"></i><span class="hidden sm:inline">Copy</span></button>
+            <button id="saveNoteBtn" title="Save to Notebook" class="iconbtn text-xs flex items-center gap-1.5"><i class="i i-bookmark"></i><span class="hidden sm:inline">Save</span></button>
+            <div class="h-4 w-px mx-1" style="background:var(--line)"></div>
+            <button id="exportMdBtn" title="Export Markdown" class="iconbtn text-xs"><i class="i i-file-code"></i> .MD</button>
+            <button id="exportTxtBtn" title="Export Plain Text" class="iconbtn text-xs"><i class="i i-file-lines"></i> .TXT</button>
+          </div>
+        </div>
+
+        <div id="outputContainer" class="flex-1 overflow-y-auto pr-1">
+          <div id="placeholderState" class="h-full flex flex-col items-center justify-center text-center p-8 muted space-y-3 my-auto">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center text-xl mb-1 sun text-white"><i class="i i-file-signature"></i></div>
+            <h3 class="text-sm font-semibold" style="color:var(--ink)">Ready for Homework Generation</h3>
+            <p class="text-xs max-w-sm leading-relaxed">
+              Select a task type, enter your subject or topic, and click <b>Generate Direct Output</b>. 
+              The system outputs <i>only finished work</i> with zero commentary or meta-instructions.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 justify-center max-w-md">
+              <button class="quick-sample chip" data-topic="Agriculture in India" data-type="essay">Essay: Agriculture in India</button>
+              <button class="quick-sample chip" data-topic="3x + 12 = 45 and graph representation" data-type="solver">Math: Solve 3x + 12 = 45</button>
+              <button class="quick-sample chip" data-topic="Renewable Energy Integration in Smart Grids" data-type="mdp">MDP: Smart Grid Energy</button>
+            </div>
+          </div>
+
+          <div id="loadingState" class="hidden h-full flex flex-col items-center justify-center p-8 muted space-y-4 my-auto">
+            <div class="relative w-12 h-12">
+              <div class="absolute top-0 left-0 w-full h-full border-4 rounded-full animate-spin" style="border-color:color-mix(in srgb,var(--orange) 20%,transparent);border-top-color:var(--orange)"></div>
+            </div>
+            <p class="text-xs font-medium animate-pulse" id="loadingMessage">Writing finished response without fluff...</p>
+          </div>
+
+          <div id="renderedContent" class="prose max-w-none hidden leading-relaxed" style="color:var(--ink)"></div>
+        </div>
+        <p class="text-[11px] muted text-center pt-3 mt-3" style="border-top:1px solid var(--line)"><i class="i i-wand-magic-sparkles ico mr-1"></i>Powered by Gemini &middot; AI can make mistakes. Check important information.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="px-4 pb-8">
+    <p class="max-w-7xl mx-auto text-xs muted text-center leading-relaxed">HW Director is a study aid. Use the generated material to learn, draft and check your own work.</p>
+    <p class="max-w-7xl mx-auto text-xs text-center mt-2 font-medium" style="color:var(--ink)"><i class="i i-wand-magic-sparkles ico mr-1"></i>Powered by Gemini</p>
+    <p class="max-w-7xl mx-auto text-[11px] muted text-center mt-1">AI can make mistakes. Please double-check important information.</p>
+  </footer>
+
+  <!-- Pomodoro Modal -->
+  <div id="pomoModal" class="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" style="background:rgba(20,15,25,.45)">
+    <div class="card w-full max-w-sm p-6 shadow-2xl relative space-y-4" style="background:var(--card2)">
+      <button id="closePomoModal" class="absolute top-4 right-4 muted text-sm"><i class="i i-xmark"></i></button>
+      <div class="text-center space-y-1">
+        <h3 class="font-bold text-lg">Focus Pomodoro</h3>
+        <p class="text-xs muted">Boost study efficiency with timed work sessions</p>
+      </div>
+      <div class="text-center my-6">
+        <span id="pomoModalTimer" class="font-mono text-5xl font-bold tracking-tight" style="color:var(--blue)">25:00</span>
+        <div id="pomoModeLabel" class="text-xs muted font-medium uppercase tracking-wider mt-2">Work Session</div>
+      </div>
+      <div class="flex items-center justify-center gap-3">
+        <button id="pomoStartBtn" class="btn-primary px-5 py-2.5 text-xs flex items-center gap-2"><i class="i i-play"></i> Start</button>
+        <button id="pomoPauseBtn" class="btn-ghost px-5 py-2.5 font-semibold text-xs flex items-center gap-2"><i class="i i-pause"></i> Pause</button>
+        <button id="pomoResetBtn" class="btn-ghost px-3.5 py-2.5 text-xs"><i class="i i-rotate-right"></i></button>
+      </div>
+      <div class="pt-3 flex justify-around text-xs muted" style="border-top:1px solid var(--line)">
+        <button id="setWork25" class="hover:text-[color:var(--blue)] transition font-medium">25m Work</button>
+        <button id="setBreak5" class="hover:text-[color:var(--blue)] transition font-medium">5m Break</button>
+        <button id="setBreak15" class="hover:text-[color:var(--blue)] transition font-medium">15m Long Break</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notebook Drawer -->
+  <aside id="notesDrawer" class="fixed inset-y-0 right-0 w-full sm:w-96 z-40 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl" style="background:var(--card);border-left:1px solid var(--line)">
+    <div class="p-4 flex items-center justify-between" style="border-bottom:1px solid var(--line)">
+      <div class="flex items-center gap-2"><i class="i i-book-bookmark ico"></i><h3 class="font-bold text-sm">Saved Homework Notebook</h3></div>
+      <button id="closeDrawerBtn" class="muted p-1"><i class="i i-xmark text-base"></i></button>
+    </div>
+    <div id="drawerList" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+    <div class="p-4 flex items-center justify-between text-xs muted" style="border-top:1px solid var(--line)">
+      <span id="savedCountText">0 notes saved</span>
+      <button id="clearAllNotesBtn" class="text-rose-500 hover:text-rose-400 transition">Clear Notebook</button>
+    </div>
+  </aside>
+
+  <div id="toast" class="fixed bottom-5 right-5 px-4 py-2.5 rounded-full text-xs shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50" style="background:var(--ink);color:var(--bg)">
+    <i id="toastIcon" class="i i-circle-check text-emerald-400"></i>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+<script>
+    // Web Audio Sound Synthesizer for Timer Alerts & Ambient Noise
+    const AudioEngine = {
+      ctx: null,
+      ambientOsc: null,
+      isAmbientPlaying: false,
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      },
+
+      playBeep() {
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, this.ctx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
+      },
+
+      toggleAmbient() {
+        this.init();
+        if (this.isAmbientPlaying) {
+          if (this.ambientOsc) {
+            this.ambientOsc.stop();
+            this.ambientOsc = null;
+          }
+          this.isAmbientPlaying = false;
+          return false;
+        } else {
+          // Create ambient pink-noise-like relax tone
+          const bufferSize = this.ctx.sampleRate * 2;
+          const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+          }
+
+          const whiteNoise = this.ctx.createBufferSource();
+          whiteNoise.buffer = noiseBuffer;
+          whiteNoise.loop = true;
+
+          // Filter for warm soft rain/lofi hum effect
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 400;
+
+          const gain = this.ctx.createGain();
+          gain.gain.value = 0.05; // Soft background volume
+
+          whiteNoise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          whiteNoise.start();
+          this.ambientOsc = whiteNoise;
+          this.isAmbientPlaying = true;
+          return true;
+        }
+      }
+    };
+
+    // -------------------------------------------------------------
+    // Application State
+    // -------------------------------------------------------------
+    const state = {
+      mode: 'essay', // 'essay', 'solver', 'mdp', 'qa', 'quiz', 'summary'
+      currentOutput: '',
+      attachedText: '',
+      attachedFileName: '',
+      notes: JSON.parse(localStorage.getItem('directhw_notes') || '[]'),
+      theme: localStorage.getItem('directhw_theme') || 'light',
+      pomoSeconds: 25 * 60,
+      pomoInitial: 25 * 60,
+      pomoTimer: null,
+      pomoRunning: false,
+      pomoMode: 'Work Session'
+    };
+
+    // DOM Element References
+    const elements = {
+      modeBtns: document.querySelectorAll('.mode-btn'),
+      inputLabel: document.getElementById('inputLabel'),
+      promptInput: document.getElementById('promptInput'),
+      fileInput: document.getElementById('fileInput'),
+      fileLabel: document.getElementById('fileLabel'),
+      linkInput: document.getElementById('linkInput'),
+      depthSelect: document.getElementById('depthSelect'),
+      gradeSelect: document.getElementById('gradeSelect'),
+      generateBtn: document.getElementById('generateBtn'),
+      generateBtnText: document.getElementById('generateBtnText'),
+      resetBtn: document.getElementById('resetBtn'),
+      charCount: document.getElementById('charCount'),
+      outputBadge: document.getElementById('outputBadge'),
+      wordCountBadge: document.getElementById('wordCountBadge'),
+      outputContainer: document.getElementById('outputContainer'),
+      placeholderState: document.getElementById('placeholderState'),
+      loadingState: document.getElementById('loadingState'),
+      loadingMessage: document.getElementById('loadingMessage'),
+      renderedContent: document.getElementById('renderedContent'),
+      copyBtn: document.getElementById('copyBtn'),
+      saveNoteBtn: document.getElementById('saveNoteBtn'),
+      exportMdBtn: document.getElementById('exportMdBtn'),
+      exportTxtBtn: document.getElementById('exportTxtBtn'),
+      themeToggleBtn: document.getElementById('themeToggleBtn'),
+      themeIcon: document.getElementById('themeIcon'),
+      togglePomoBtn: document.getElementById('togglePomoBtn'),
+      pomoTimerDisplay: document.getElementById('pomoTimerDisplay'),
+      pomoModal: document.getElementById('pomoModal'),
+      closePomoModal: document.getElementById('closePomoModal'),
+      pomoModalTimer: document.getElementById('pomoModalTimer'),
+      pomoModeLabel: document.getElementById('pomoModeLabel'),
+      pomoStartBtn: document.getElementById('pomoStartBtn'),
+      pomoPauseBtn: document.getElementById('pomoPauseBtn'),
+      pomoResetBtn: document.getElementById('pomoResetBtn'),
+      setWork25: document.getElementById('setWork25'),
+      setBreak5: document.getElementById('setBreak5'),
+      setBreak15: document.getElementById('setBreak15'),
+      toggleAudioBtn: document.getElementById('toggleAudioBtn'),
+      toggleDrawerBtn: document.getElementById('toggleDrawerBtn'),
+      closeDrawerBtn: document.getElementById('closeDrawerBtn'),
+      notesDrawer: document.getElementById('notesDrawer'),
+      drawerList: document.getElementById('drawerList'),
+      savedBadge: document.getElementById('savedBadge'),
+      savedCountText: document.getElementById('savedCountText'),
+      clearAllNotesBtn: document.getElementById('clearAllNotesBtn'),
+      fileContextPreview: document.getElementById('fileContextPreview'),
+      fileContextName: document.getElementById('fileContextName'),
+      clearAttachmentsBtn: document.getElementById('clearAttachmentsBtn'),
+      toast: document.getElementById('toast'),
+      toastMsg: document.getElementById('toastMsg'),
+      toastIcon: document.getElementById('toastIcon')
+    };
+
+    // Mode Configuration
+    const modeConfig = {
+      essay: {
+        label: 'Essay Topic or Prompt',
+        badge: 'Direct Essay Output',
+        placeholder: 'Enter essay topic (e.g. "Agriculture in India", "Impact of Artificial Intelligence on Modern Education", "Causes of WWII")...',
+        promptPrefix: 'Write a comprehensive, fully articulated essay on: '
+      },
+      solver: {
+        label: 'Math / Science Question or Problem',
+        badge: 'Step-by-Step Solution',
+        placeholder: 'Enter problem (e.g. "Solve 3x + 12 = 45 and show graph behavior", "Calculate kinetic energy for 5kg mass at 10m/s")...',
+        promptPrefix: 'Provide a complete step-by-step solution for the following problem: '
+      },
+      mdp: {
+        label: 'Multi-Disciplinary Project (MDP) Topic',
+        badge: 'MDP Project Document',
+        placeholder: 'Enter project theme (e.g. "Sustainable Energy Systems", "Water Conservation in Smart Cities")...',
+        promptPrefix: 'Construct a multi-disciplinary project (MDP) report complete with Title, Abstract, Objectives, Cross-Curricular Connections, Implementation Plan, and Conclusion on: '
+      },
+      qa: {
+        label: 'Questions or Assignment Prompt',
+        badge: 'Direct Answers',
+        placeholder: 'Paste homework questions or prompt directly here...',
+        promptPrefix: 'Provide direct, accurate, and complete answers to the following homework questions: '
+      },
+      quiz: {
+        label: 'Subject for Quiz or Flashcards',
+        badge: 'Flashcards & Study Quiz',
+        placeholder: 'Enter topic for flashcards/quiz (e.g. "Photosynthesis and Cellular Respiration", "French Revolution Timeline")...',
+        promptPrefix: 'Generate a study deck consisting of 8-10 Flashcard Q&A key terms and a 5-question multiple choice self-quiz on: '
+      },
+      summary: {
+        label: 'Text or Material to Summarize',
+        badge: 'Direct Executive Summary',
+        placeholder: 'Paste chapter, notes, or article content to get a direct structured summary...',
+        promptPrefix: 'Provide a clear, highly structured, direct summary with key takeaways from: '
+      },
+      research: {
+        label: 'Research Topic or Question', badge: 'Research Report', search: true,
+        placeholder: 'Enter a research topic or question (e.g. "Effects of social media on teenagers", "How do vaccines work")...',
+        promptPrefix: 'Write a well-organised research report with these sections: Overview, Key Findings, Evidence and Data, Different Perspectives, Limitations, Conclusion. Use current information from web search and attribute claims to the sources you found. Never invent a citation, statistic or quote. Topic: '
+      },
+      infographic: {
+        label: 'Topic for Infographic', badge: 'Infographic', render: 'infographic',
+        placeholder: 'Enter a topic (e.g. "The water cycle", "Causes of climate change", "History of the internet")...',
+        promptPrefix: 'Create infographic content as ONE JSON object with exactly this shape: {"title":string,"subtitle":string,"stats":[{"value":string,"label":string}] (3-4 items),"sections":[{"icon":one emoji,"heading":string,"points":[string]}] (3-5 sections with 2-3 short points each),"timeline":[{"step":string,"text":string}] (0-5 items, only if the topic has a process or history),"takeaway":string}. Keep every string short and punchy. Only use numbers you are confident about; otherwise describe the fact in words instead of inventing a statistic. Topic: '
+      },
+      mindmap: {
+        label: 'Topic for Mind Map', badge: 'Mind Map', render: 'mindmap',
+        placeholder: 'Enter a topic (e.g. "Photosynthesis", "World War II", "Machine learning")...',
+        promptPrefix: 'Create a mind map as ONE JSON object with exactly this shape: {"root":string,"children":[{"label":string,"children":[{"label":string,"children":[]}]}]} with 4-7 main branches, up to 3 levels deep, and labels of 1-6 words. Topic: '
+      },
+      slides: {
+        label: 'Topic for Slide Deck', badge: 'Slide Deck', render: 'slides',
+        placeholder: 'Enter a presentation topic (e.g. "Renewable energy", "The French Revolution")...',
+        promptPrefix: 'Create a slide deck as ONE JSON object with exactly this shape: {"title":string,"slides":[{"title":string,"visual":one emoji,"bullets":[string] (3-4 short bullets),"narration":string (2-3 sentences a presenter would say)}]} with 6-9 slides: a title slide first and a conclusion last. Topic: '
+      },
+      datatable: {
+        label: 'Topic or Material for Data Table', badge: 'Data Table',
+        placeholder: 'Enter a topic or paste material (e.g. "Compare the planets of the solar system", "Types of rocks")...',
+        promptPrefix: 'Organise the key information on the following into one or more clear Markdown tables, choosing useful columns (for example item, description, key facts, example). Output only the tables, each with a one-line heading above it. Topic: '
+      },
+      studyguide: {
+        label: 'Subject for Study Guide', badge: 'Study Guide',
+        placeholder: 'Enter a subject or chapter (e.g. "Cell biology", "The Mughal Empire")...',
+        promptPrefix: 'Create a study guide with: Key Concepts (short explanations), a Glossary of key terms (table), Important Facts and Formulas, 8 Short-Answer Questions, 3 Essay Prompts, and an Answer Key with brief model answers for the short-answer questions. Subject: '
+      },
+      briefing: {
+        label: 'Topic or Material for Briefing Doc', badge: 'Briefing Document',
+        placeholder: 'Enter a topic or paste material to turn into a briefing document...',
+        promptPrefix: 'Write a briefing document with: Executive Summary (3-4 sentences), Main Themes (a short paragraph each), Key Facts and Figures, Notable Details, and Suggested Next Steps. Topic: '
+      },
+      audio: {
+        label: 'Topic for Audio Overview', badge: 'Audio Overview Script',
+        placeholder: 'Enter a topic for a two-host podcast-style discussion (e.g. "Black holes", "The causes of inflation")...',
+        promptPrefix: 'Write a lively two-host podcast-style audio overview script (about 600-800 words) where Host A and Host B discuss the topic in a friendly, curious conversation that explains the ideas clearly. Format EVERY line exactly as "**Host A:** text" or "**Host B:** text", alternating, with no stage directions and no headings. Topic: '
+      }
+    };
+
+    // -------------------------------------------------------------
+    // Initialization & Event Listeners
+    // -------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      applySavedTheme();
+      updateSavedBadge();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Mode button handlers with explicit reset behavior
+      elements.modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.mode;
+          switchMode(mode);
+        });
+      });
+
+      // Character Counter & Auto Resize
+      elements.promptInput.addEventListener('input', () => {
+        elements.charCount.textContent = `${elements.promptInput.value.length} chars`;
+      });
+
+      // Direct Action Buttons
+      elements.generateBtn.addEventListener('click', handleGenerate);
+      elements.resetBtn.addEventListener('click', resetAll);
+
+      // File Reader Attachment
+      elements.fileInput.addEventListener('change', handleFileUpload);
+      elements.clearAttachmentsBtn.addEventListener('click', clearAttachments);
+
+      // Clipboard & Saved Notes Actions
+      elements.copyBtn.addEventListener('click', copyToClipboard);
+      elements.saveNoteBtn.addEventListener('click', saveCurrentToNotebook);
+      elements.exportMdBtn.addEventListener('click', () => exportFile('md'));
+      elements.exportTxtBtn.addEventListener('click', () => exportFile('txt'));
+
+      // Quick Sample Topics Buttons
+      document.querySelectorAll('.quick-sample').forEach(sample => {
+        sample.addEventListener('click', (e) => {
+          const topic = e.currentTarget.dataset.topic;
+          const type = e.currentTarget.dataset.type;
+          switchMode(type);
+          elements.promptInput.value = topic;
+          elements.charCount.textContent = `${topic.length} chars`;
+          handleGenerate();
+        });
+      });
+
+      // Pomodoro Events
+      elements.togglePomoBtn.addEventListener('click', () => elements.pomoModal.classList.remove('hidden'));
+      elements.closePomoModal.addEventListener('click', () => elements.pomoModal.classList.add('hidden'));
+      elements.pomoStartBtn.addEventListener('click', startPomodoro);
+      elements.pomoPauseBtn.addEventListener('click', pausePomodoro);
+      elements.pomoResetBtn.addEventListener('click', resetPomodoro);
+      elements.setWork25.addEventListener('click', () => setPomoTime(25, 'Work Session'));
+      elements.setBreak5.addEventListener('click', () => setPomoTime(5, 'Short Break'));
+      elements.setBreak15.addEventListener('click', () => setPomoTime(15, 'Long Break'));
+
+      // Audio Toggle
+      elements.toggleAudioBtn.addEventListener('click', () => {
+        const isPlaying = AudioEngine.toggleAmbient();
+        elements.toggleAudioBtn.classList.toggle('is-on', isPlaying);
+        showToast(isPlaying ? 'Lo-Fi Ambient Noise Active' : 'Ambient Audio Muted');
+      });
+
+      // Drawer Toggle
+      elements.toggleDrawerBtn.addEventListener('click', openDrawer);
+      elements.closeDrawerBtn.addEventListener('click', closeDrawer);
+      elements.clearAllNotesBtn.addEventListener('click', clearAllNotes);
+
+      // Theme Toggle
+      elements.themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+
+    // -------------------------------------------------------------
+    // Mode Switcher (Clean Reset, Zero Prompt Chaining)
+    // -------------------------------------------------------------
+    function switchMode(newMode) {
+      state.mode = newMode;
+      const config = modeConfig[newMode];
+
+      // Update UI Buttons
+      elements.modeBtns.forEach(btn => {
+        const isActive = btn.dataset.mode === newMode;
+        if (isActive) {
+          btn.className = 'mode-btn active';
+        } else {
+          btn.className = 'mode-btn';
+        }
+      });
+
+      // Update Form Labels
+      elements.inputLabel.innerHTML = `<i class="i i-keyboard ico"></i> ${config.label}`;
+      elements.promptInput.placeholder = config.placeholder;
+      elements.outputBadge.textContent = config.badge;
+      stopSpeech();
+      updatePlayBtn();
+
+      // Clean prompt without prompt chaining
+      elements.promptInput.value = '';
+      elements.charCount.textContent = '0 chars';
+    }
+
+    function resetAll() {
+      elements.promptInput.value = '';
+      elements.linkInput.value = '';
+      clearAttachments();
+      elements.charCount.textContent = '0 chars';
+      elements.renderedContent.innerHTML = '';
+      elements.renderedContent.classList.add('hidden');
+      elements.placeholderState.classList.remove('hidden');
+      elements.wordCountBadge.textContent = '0 words';
+      state.currentOutput = '';
+      state.outKind = '';
+      stopSpeech();
+      updatePlayBtn();
+      showToast('All fields reset');
+    }
+
+    // -------------------------------------------------------------
+    // File Attachment & Text Reader
+    // -------------------------------------------------------------
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      state.attachedFileName = file.name;
+      elements.fileLabel.textContent = file.name.length > 18 ? file.name.substring(0, 15) + '...' : file.name;
+      elements.fileContextName.textContent = file.name;
+      elements.fileContextPreview.classList.remove('hidden');
+      elements.clearAttachmentsBtn.classList.remove('hidden');
+
+      const reader = new FileReader();
+
+      const okImg = ['image/jpeg','image/png','image/gif','image/webp'];
+      if (okImg.includes(file.type) || file.type === 'application/pdf') {
+        reader.onload = (event) => {
+          state.attachedText = `[Attached file: ${file.name}]`;
+          state.attachedBase64 = event.target.result.split(',')[1];
+          state.attachedMime = file.type;
+          showToast('File uploaded as context');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Text / Document reader
+        if (/\.docx?$/i.test(file.name)) { showToast('Word files can\'t be read. Save as PDF or TXT first', 'error'); }
+        reader.onload = (event) => {
+          state.attachedText = event.target.result;
+          state.attachedBase64 = null;
+          showToast('File text extracted');
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    function clearAttachments() {
+      elements.fileInput.value = '';
+      elements.fileLabel.textContent = 'Upload File (TXT, Doc, Image)';
+      elements.fileContextPreview.classList.add('hidden');
+      elements.clearAttachmentsBtn.classList.add('hidden');
+      state.attachedText = '';
+      state.attachedFileName = '';
+      state.attachedBase64 = null;
+    }
+
+    // -------------------------------------------------------------
+    // AI Engine (Gemini)
+    // -------------------------------------------------------------
+    // The page talks to YOUR server (server.js locally, or the Cloudflare
+    // Worker when public), which holds the API key. NEVER put a key in this file.
+    // Public site: replace '/api/claude' with your Worker URL.
+    const AI_CONFIG = {
+      endpoint: '/api/claude',
+      model: 'gemini-3.8-flash', // the server chooses the real model
+      maxTokens: { brief: 1500, standard: 3500, detailed: 6000 }
+    };
+
+    async function handleGenerate() {
+      const userPrompt = elements.promptInput.value.trim();
+      const linkUrl = elements.linkInput.value.trim();
+
+      if (!userPrompt && !state.attachedText) {
+        showToast('Please enter a topic or paste a prompt first', 'error');
+        elements.promptInput.focus();
+        return;
+      }
+
+      elements.placeholderState.classList.add('hidden');
+      elements.renderedContent.classList.add('hidden');
+      elements.loadingState.classList.remove('hidden');
+      elements.generateBtn.disabled = true;
+      elements.generateBtn.classList.add('opacity-75');
+
+      const config = modeConfig[state.mode];
+      const depth = elements.depthSelect.value;
+      const grade = elements.gradeSelect.value;
+
+      const systemPrompt = `You are a direct homework and assignment content writer.
+CRITICAL RULE: YOU MUST OUTPUT ONLY THE DIRECT FINISHED CONTENT.
+- NEVER include intro comments like "Here is your essay:" or "Sure, I can solve this."
+- NEVER write explanations of how you constructed the essay or solved the problem.
+- DO NOT add meta-commentary, self-evaluations, guidelines, or disclaimers.
+- Write in clean, formatted Markdown using headers, bullet points and tables where appropriate. Write math in plain readable text or simple notation, not raw LaTeX delimiters.
+- Be accurate. Show correct, complete working for any calculation and double-check final answers.
+- If a web link is given you cannot open it; treat it only as a hint about the topic and never invent its contents.
+- Academic Grade Target: ${grade}. Depth Level: ${depth}.${config.render ? '\n- OUTPUT FORMAT OVERRIDE: reply with ONLY one valid JSON object. No code fences and no text outside the JSON.' : ''}`;
+
+      let fullUserMessage = `${config.promptPrefix} ${userPrompt}`;
+      if (linkUrl) fullUserMessage += `\n\nReference Web Link (cannot be opened): ${linkUrl}`;
+      if (state.attachedText && !state.attachedBase64) {
+        fullUserMessage += `\n\nAttached Reference File Content (${state.attachedFileName}):\n${state.attachedText}`;
+      }
+
+      const content = [];
+      if (state.attachedBase64) {
+        const isPdf = state.attachedMime === 'application/pdf';
+        content.push({
+          type: isPdf ? 'document' : 'image',
+          source: { type: 'base64', media_type: state.attachedMime, data: state.attachedBase64 }
+        });
+      }
+      content.push({ type: 'text', text: fullUserMessage });
+
+      try {
+        const response = await fetch(AI_CONFIG.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: AI_CONFIG.model,
+            search: !!config.search,
+            json: !!config.render,
+            max_tokens: AI_CONFIG.maxTokens[depth] || 3500,
+            system: systemPrompt,
+            messages: [{ role: 'user', content }]
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data?.error?.message || `Request failed (${response.status})`);
+        }
+
+        const resultText = (data.content || [])
+          .filter(b => b.type === 'text')
+          .map(b => b.text)
+          .join('\n');
+        if (!resultText.trim()) throw new Error('The AI returned an empty response');
+
+        renderOutput(resultText, config);
+      } catch (err) {
+        console.error('AI request failed:', err);
+        elements.placeholderState.classList.remove('hidden');
+        let msg = err.message;
+        if (location.protocol === 'file:') msg = 'Open the page via the server: run "node server.js" then visit http://localhost:3000';
+        else if (err instanceof TypeError) msg = 'Cannot reach the server. Is "node server.js" running?';
+        showToast('AI request failed: ' + msg, 'error');
+      } finally {
+        elements.loadingState.classList.add('hidden');
+        elements.generateBtn.disabled = false;
+        elements.generateBtn.classList.remove('opacity-75');
+      }
+    }
+
+    // Helper: Strip accidental conversational intro/outro text
+    function cleanMetaFluff(text) {
+      if (!text) return '';
+      return text
+        .replace(/^(here is|here's|below is|sure,|certainly,|as requested,)[^\n]*\n/i, '')
+        .replace(/^(i have written|i hope this helps|let me know if you need)[^\n]*/gi, '')
+        .trim();
+    }
+
+    // -------------------------------------------------------------
+    // Study Studio: visual outputs, listen mode
+    // -------------------------------------------------------------
+    const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    function renderOutput(text, config) {
+      if (config.render) {
+        try {
+          const obj = JSON.parse(text.replace(/^\s*```(?:json)?\s*|\s*```\s*$/g, '').trim());
+          renderVisual(config.render, obj);
+          return;
+        } catch (e) { console.warn('Visual output was not valid JSON, showing text instead', e); }
+      }
+      renderResult(cleanMetaFluff(text));
+    }
+
+    const visualBuilders = {
+      infographic: d => ({
+        html: `<div class="ig"><div class="ig-head"><h2>${esc(d.title)}</h2><p>${esc(d.subtitle)}</p></div>`
+          + ((d.stats || []).length ? `<div class="ig-stats">${d.stats.map(s => `<div class="ig-stat"><b>${esc(s.value)}</b><span>${esc(s.label)}</span></div>`).join('')}</div>` : '')
+          + `<div class="ig-grid">${(d.sections || []).map(s => `<div class="ig-card"><div class="ig-ico">${esc(s.icon || '•')}</div><h4>${esc(s.heading)}</h4><ul>${(s.points || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}</div>`
+          + ((d.timeline || []).length ? `<div class="ig-steps">${d.timeline.map((t, i) => `<div class="ig-step"><span>${i + 1}</span><div><b>${esc(t.step)}</b><p>${esc(t.text)}</p></div></div>`).join('')}</div>` : '')
+          + (d.takeaway ? `<div class="ig-take">${esc(d.takeaway)}</div>` : '') + '</div>',
+        md: `# ${d.title}\n\n_${d.subtitle || ''}_\n\n` + (d.stats || []).map(s => `- **${s.value}**: ${s.label}`).join('\n')
+          + '\n\n' + (d.sections || []).map(s => `## ${s.icon || ''} ${s.heading}\n` + (s.points || []).map(x => `- ${x}`).join('\n')).join('\n\n')
+          + ((d.timeline || []).length ? '\n\n## Timeline\n' + d.timeline.map((t, i) => `${i + 1}. **${t.step}**: ${t.text}`).join('\n') : '')
+          + (d.takeaway ? `\n\n> ${d.takeaway}` : '')
+      }),
+      mindmap: d => {
+        const colors = ['#2338c8', '#ee7f3a', '#16a34a', '#9333ea', '#e11d48', '#0891b2', '#ca8a04'];
+        const node = (n, depth, c) => {
+          const kids = n.children || [], label = esc(n.label || n.title);
+          return kids.length
+            ? `<li><details ${depth < 2 ? 'open' : ''}><summary style="--c:${c}">${label}</summary><ul>${kids.map(k => node(k, depth + 1, c)).join('')}</ul></details></li>`
+            : `<li class="mm-leaf">${label}</li>`;
+        };
+        const md = (n, d) => '  '.repeat(d) + '- ' + (n.label || n.title) + '\n' + (n.children || []).map(k => md(k, d + 1)).join('');
+        return {
+          html: `<div class="mm"><div class="mm-root">${esc(d.root || d.title)}</div><ul class="mm-tree">${(d.children || []).map((n, i) => node(n, 1, colors[i % colors.length])).join('')}</ul></div>`,
+          md: `# ${d.root || d.title}\n\n` + (d.children || []).map(n => md(n, 0)).join('')
+        };
+      },
+      slides: d => ({
+        html: `<div class="sd"><div class="sd-title">${esc(d.title)}</div><div class="sd-stage" id="sdStage"></div><div class="sd-nav"><button id="sdPrev" class="btn-ghost px-4 py-1.5 text-xs">Previous</button><span id="sdCount" class="text-xs muted"></span><button id="sdNext" class="btn-primary px-4 py-1.5 text-xs">Next</button></div></div>`,
+        md: `# ${d.title}\n\n` + (d.slides || []).map((s, i) => `## Slide ${i + 1}: ${s.title}\n` + (s.bullets || []).map(b => `- ${b}`).join('\n') + (s.narration ? `\n\n> ${s.narration}` : '')).join('\n\n')
+      })
+    };
+
+    function initSlides(slides) {
+      let cur = 0;
+      const stage = document.getElementById('sdStage'), count = document.getElementById('sdCount');
+      const show = i => {
+        cur = Math.max(0, Math.min(slides.length - 1, i));
+        const s = slides[cur];
+        stage.innerHTML = `<div class="sd-vis">${esc(s.visual || '')}</div><h3>${esc(s.title)}</h3><ul>${(s.bullets || []).map(b => `<li>${esc(b)}</li>`).join('')}</ul>`;
+        count.textContent = `${cur + 1} / ${slides.length}`;
+      };
+      document.getElementById('sdPrev').onclick = () => show(cur - 1);
+      document.getElementById('sdNext').onclick = () => show(cur + 1);
+      window.__showSlide = show;
+      show(0);
+    }
+
+    function renderVisual(kind, obj) {
+      const out = visualBuilders[kind](obj);
+      state.currentOutput = out.md;
+      state.outKind = kind;
+      state.slides = kind === 'slides' ? (obj.slides || []) : null;
+      elements.renderedContent.innerHTML = out.html;
+      elements.renderedContent.classList.remove('hidden');
+      if (kind === 'slides') initSlides(state.slides);
+      elements.wordCountBadge.textContent = `${out.md.replace(/[#*`_>-]/g, '').trim().split(/\s+/).length} words`;
+      updatePlayBtn();
+      showToast('Finished ' + modeConfig[kind].badge.toLowerCase() + ' created');
+    }
+
+    // Listen mode (audio overview script / slide narration) using the browser's built-in voices
+    let speaking = false;
+    function setPlayLabel(on) {
+      document.getElementById('playBtn').innerHTML = on
+        ? '<i class="i i-pause"></i><span class="hidden sm:inline">Stop</span>'
+        : '<i class="i i-play"></i><span class="hidden sm:inline">Listen</span>';
+    }
+    function stopSpeech() {
+      speaking = false;
+      try { speechSynthesis.cancel(); } catch (e) {}
+      setPlayLabel(false);
+    }
+    function updatePlayBtn() {
+      const ok = state.currentOutput && (state.outKind === 'audio' || (state.outKind === 'slides' && state.slides));
+      document.getElementById('playBtn').classList.toggle('hidden', !ok);
+    }
+    function speakQueue(items) {
+      if (!('speechSynthesis' in window)) { showToast('This browser has no speech support', 'error'); return; }
+      speechSynthesis.cancel();
+      speaking = true; setPlayLabel(true);
+      const voices = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+      let i = 0;
+      const next = () => {
+        if (!speaking || i >= items.length) { stopSpeech(); return; }
+        const it = items[i++];
+        if (it.onStart) it.onStart();
+        const u = new SpeechSynthesisUtterance(it.text);
+        const v = voices.length ? voices[it.voice % voices.length] : null;
+        if (v) u.voice = v;
+        u.pitch = it.voice ? 0.85 : 1.05;
+        u.onend = next; u.onerror = next;
+        speechSynthesis.speak(u);
+      };
+      next();
+    }
+    const sentences = t => (String(t).match(/[^.!?]+[.!?]*/g) || [String(t)]).map(x => x.trim()).filter(Boolean);
+
+    window.togglePlay = function() {
+      if (speaking) { stopSpeech(); return; }
+      let items = [];
+      if (state.outKind === 'slides' && state.slides) {
+        state.slides.forEach((s, idx) => sentences(s.narration || s.title).forEach((t, j) =>
+          items.push({ text: t, voice: 0, onStart: j === 0 ? () => window.__showSlide && window.__showSlide(idx) : null })));
+      } else {
+        state.currentOutput.split('\n').forEach(line => {
+          const m = line.match(/^\W*Host\s*([AB])\W*[:：]?\W*(.*)$/i);
+          if (m && m[2].trim()) sentences(m[2].replace(/\*+/g, '')).forEach(t => items.push({ text: t, voice: m[1].toUpperCase() === 'A' ? 0 : 1 }));
+        });
+      }
+      if (!items.length) { showToast('Nothing to read aloud', 'error'); return; }
+      speakQueue(items);
+    };
+
+    function renderResult(markdownText) {
+      state.currentOutput = markdownText;
+      state.outKind = state.mode;
+      updatePlayBtn();
+      elements.renderedContent.innerHTML = marked.parse(markdownText);
+      elements.renderedContent.classList.remove('hidden');
+
+      // Calculate Word Count
+      const plainText = markdownText.replace(/[#*`_$-]/g, '');
+      const words = plainText.trim().split(/\s+/).filter(w => w.length > 0).length;
+      elements.wordCountBadge.textContent = `${words} words`;
+
+      showToast('Finished homework written successfully');
+    }
+
+    // -------------------------------------------------------------
+    // Clipboard & Notebook Management
+    // -------------------------------------------------------------
+    function copyToClipboard() {
+      if (!state.currentOutput) {
+        showToast('Nothing to copy yet', 'error');
+        return;
+      }
+
+      // Robust fallback for iFrame / strict environment clipboard copy
+      const textarea = document.createElement('textarea');
+      textarea.value = state.currentOutput;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Copied full content to clipboard');
+      } catch (err) {
+        showToast('Failed to copy', 'error');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function exportFile(extension) {
+      if (!state.currentOutput) {
+        showToast('No content available for export', 'error');
+        return;
+      }
+
+      const filename = `HWDirector_${state.mode}_${Date.now()}.${extension}`;
+      const content = extension === 'txt' ? state.currentOutput.replace(/[#*`_$-]/g, '') : state.currentOutput;
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`Exported as .${extension.toUpperCase()}`);
+    }
+
+    function saveCurrentToNotebook() {
+      if (!state.currentOutput) {
+        showToast('Generate content before saving', 'error');
+        return;
+      }
+
+      const topic = elements.promptInput.value.trim() || 'Untitled Homework';
+      const note = {
+        id: Date.now(),
+        title: topic.length > 35 ? topic.substring(0, 35) + '...' : topic,
+        mode: state.mode,
+        content: state.currentOutput,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      };
+
+      state.notes.unshift(note);
+      localStorage.setItem('directhw_notes', JSON.stringify(state.notes));
+      updateSavedBadge();
+      renderNotesList();
+      showToast('Saved to Notebook');
+    }
+
+    function renderNotesList() {
+      if (state.notes.length === 0) {
+        elements.drawerList.innerHTML = `
+          <div class="text-center muted py-12 text-xs">
+            <i class="i i-folder-open text-2xl mb-2 block ico"></i>
+            No saved notes yet. Click the save button on any output to store it here.
+          </div>`;
+        return;
+      }
+
+      elements.drawerList.innerHTML = state.notes.map(note => `
+        <div class="p-3 flex flex-col gap-2" style="background:var(--card2);border:1px solid var(--line);border-radius:18px">
+          <div class="flex items-center justify-between">
+            <span class="badge uppercase">${note.mode}</span>
+            <span class="text-[10px] muted">${note.date}</span>
+          </div>
+          <h4 class="font-semibold text-xs line-clamp-1">${note.title}</h4>
+          <div class="flex items-center gap-2 pt-2 justify-end" style="border-top:1px solid var(--line)">
+            <button onclick="loadSavedNote(${note.id})" class="btn-ghost text-[11px] font-medium flex items-center gap-1 px-3 py-1">
+              <i class="i i-arrow-up-right-from-square text-[10px]"></i> Open
+            </button>
+            <button onclick="deleteSavedNote(${note.id})" class="text-[11px] text-rose-500 hover:text-rose-400 p-1">
+              <i class="i i-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.loadSavedNote = function(id) {
+      const note = state.notes.find(n => n.id === id);
+      if (!note) return;
+      switchMode(note.mode);
+      elements.promptInput.value = note.title;
+      renderResult(note.content);
+      closeDrawer();
+      showToast('Loaded saved note');
+    };
+
+    window.deleteSavedNote = function(id) {
+      state.notes = state.notes.filter(n => n.id !== id);
+      localStorage.setItem('directhw_notes', JSON.stringify(state.notes));
+      updateSavedBadge();
+      renderNotesList();
+      showToast('Note deleted');
+    };
+
+    function clearAllNotes() {
+      if (confirm('Clear all saved notes from your notebook?')) {
+        state.notes = [];
+        localStorage.setItem('directhw_notes', JSON.stringify([]));
+        updateSavedBadge();
+        renderNotesList();
+        showToast('Notebook cleared');
+      }
+    }
+
+    function updateSavedBadge() {
+      const count = state.notes.length;
+      elements.savedBadge.textContent = count;
+      elements.savedBadge.classList.toggle('hidden', count === 0);
+      elements.savedCountText.textContent = `${count} notes saved`;
+    }
+
+    function openDrawer() {
+      renderNotesList();
+      elements.notesDrawer.classList.remove('translate-x-full');
+    }
+
+    function closeDrawer() {
+      elements.notesDrawer.classList.add('translate-x-full');
+    }
+
+    // -------------------------------------------------------------
+    // Pomodoro Timer Logic
+    // -------------------------------------------------------------
+    function setPomoTime(minutes, modeLabel) {
+      pausePomodoro();
+      state.pomoSeconds = minutes * 60;
+      state.pomoInitial = minutes * 60;
+      state.pomoMode = modeLabel;
+      updatePomoDisplay();
+    }
+
+    function startPomodoro() {
+      if (state.pomoRunning) return;
+      state.pomoRunning = true;
+      elements.pomoStartBtn.classList.add('bg-indigo-700');
+
+      state.pomoTimer = setInterval(() => {
+        if (state.pomoSeconds > 0) {
+          state.pomoSeconds--;
+          updatePomoDisplay();
+        } else {
+          pausePomodoro();
+          AudioEngine.playBeep();
+          showToast(`${state.pomoMode} finished!`);
+        }
+      }, 1000);
+    }
+
+    function pausePomodoro() {
+      state.pomoRunning = false;
+      clearInterval(state.pomoTimer);
+      elements.pomoStartBtn.classList.remove('bg-indigo-700');
+    }
+
+    function resetPomodoro() {
+      pausePomodoro();
+      state.pomoSeconds = state.pomoInitial;
+      updatePomoDisplay();
+    }
+
+    function updatePomoDisplay() {
+      const mins = Math.floor(state.pomoSeconds / 60).toString().padStart(2, '0');
+      const secs = (state.pomoSeconds % 60).toString().padStart(2, '0');
+      const timeStr = `${mins}:${secs}`;
+      elements.pomoTimerDisplay.textContent = timeStr;
+      elements.pomoModalTimer.textContent = timeStr;
+      elements.pomoModeLabel.textContent = state.pomoMode;
+    }
+
+    // -------------------------------------------------------------
+    // Theme Switcher
+    // -------------------------------------------------------------
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        document.documentElement.classList.remove('dark');
+        elements.themeIcon.className = 'i i-sun text-amber-400';
+        localStorage.setItem('directhw_theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        elements.themeIcon.className = 'i i-moon';
+        localStorage.setItem('directhw_theme', 'dark');
+      }
+    }
+
+    function applySavedTheme() {
+      if (state.theme === 'light') {
+        document.documentElement.classList.remove('dark');
+        elements.themeIcon.className = 'i i-sun text-amber-400';
+      } else {
+        document.documentElement.classList.add('dark');
+        elements.themeIcon.className = 'i i-moon';
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Toast Notification Helper
+    // -------------------------------------------------------------
+    function showToast(message, type = 'success') {
+      elements.toastMsg.textContent = message;
+      if (type === 'error') {
+        elements.toastIcon.className = 'i i-circle-exclamation text-rose-400';
+      } else {
+        elements.toastIcon.className = 'i i-circle-check text-emerald-400';
+      }
+
+      elements.toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        elements.toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
